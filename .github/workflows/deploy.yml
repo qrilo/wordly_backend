@@ -1,0 +1,60 @@
+name: Deploy to Heroku
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  migrate:
+    name: "Restore and Migrate"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 7.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: src/Wordly.Api
+      - name: "Install EF CLI"
+        run: dotnet tool install --global dotnet-ef
+      - name: "Update database"
+        working-directory: src/Wordly.Api
+        run: dotnet ef database update --connection "${{secrets.DBCONTEXT_STRING}}" --project "/home/runner/work/wordly_backend/wordly_backend/src/Wordly.DataAccess/Wordly.DataAccess.csproj"
+
+  deploy:
+    name: "Create docker image and deploy to Heroku"
+    needs: [migrate]
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: "Substitute appsettings.json"
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: 'src/Wordly.Api/appsettings.json'
+        env:
+          ConnectionStrings.DatabaseContext: ${{ secrets.DBCONTEXT_STRING }}
+          AuthOptions.Secret: ${{ secrets.JWT_SECRET }}
+    
+      #- uses: actions/checkout@v2.3.4
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          docker_heroku_process_type: web
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: api-wordly-backend
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          justlogin: true
+
+      - name: "Login to heroku registry"
+        run: heroku container:login
+
+      - name: "Build and push to heroku registry"
+        run: heroku container:push web --app api-wordly-backend
+
+      - name: "Releases the container"
+        run: heroku container:release web --app api-wordly-backend
