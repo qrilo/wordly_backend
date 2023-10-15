@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: "Substitute appsettings.json"
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: 'src/Wordly.Api/appsettings.json'
+        env:
+          AuthOptions.Secret: ${{ secrets.JWT_SECRET }}
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
