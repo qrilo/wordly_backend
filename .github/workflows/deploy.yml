@@ -40,6 +40,7 @@ jobs:
         env:
           ConnectionStrings.DatabaseContext: ${{ secrets.DBCONTEXT_STRING }}
           AuthOptions.Secret: ${{ secrets.JWT_SECRET }}
+          BlobOptions.ConnectionString: ${{ secrets.BLOB_STRING }}
     
       #- uses: actions/checkout@v2.3.4
       - uses: akhileshns/heroku-deploy@v3.12.12
