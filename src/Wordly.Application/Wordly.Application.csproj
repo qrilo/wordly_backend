@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.18.0" />
+        <PackageReference Include="FluentValidation" Version="11.5.2"/>
+        <PackageReference Include="Kirpichyov.FriendlyJwt" Version="1.0.7"/>
+        <PackageReference Include="MassTransit" Version="8.0.16"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0"/>
+        <PackageReference Include="Quartz" Version="3.6.2"/>
+        <PackageReference Include="Quartz.AspNetCore" Version="3.6.2"/>
+        <PackageReference Include="Unidecode.NET" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Wordly.Core\Wordly.Core.csproj"/>
+        <ProjectReference Include="..\Wordly.DataAccess\Wordly.DataAccess.csproj"/>
+    </ItemGroup>
+
+
+
+
+</Project>
