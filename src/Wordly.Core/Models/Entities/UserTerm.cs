@@ -4,7 +4,7 @@ namespace Wordly.Core.Models.Entities;
 
 public sealed class UserTerm : EntityBase<Guid>
 {
-    public UserTerm(string term, string definition, Guid userId, string[] tags)
+    public UserTerm(string term, string definition, Guid userId, string[] tags, string description)
         : base(Guid.NewGuid())
     {
         Term = term;
@@ -13,6 +13,7 @@ public sealed class UserTerm : EntityBase<Guid>
         Tags = tags ?? Array.Empty<string>();
         CreatedAtUtc = DateTime.UtcNow;
         UpdatedAtUtc = DateTime.UtcNow;
+        Description = description;
     }
 
     public UserTerm()
@@ -28,6 +29,7 @@ public sealed class UserTerm : EntityBase<Guid>
     public string[] Tags { get; private set; }
     public DateTime CreatedAtUtc { get; init; }
     public DateTime UpdatedAtUtc { get; private set; }
+    public string Description { get; private set; }
 
     public void SetTerm(string term)
     {
@@ -58,5 +60,11 @@ public sealed class UserTerm : EntityBase<Guid>
     {
         ImageUrl = null;
         ImageBlobId = null;
+    }
+
+    public void SetDescription(string description)
+    {
+        Description = description;
+        UpdatedAtUtc = DateTime.UtcNow;
     }
 }

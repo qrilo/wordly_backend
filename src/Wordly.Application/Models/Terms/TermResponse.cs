@@ -9,4 +9,6 @@ public class TermResponse
     public string Definition { get; set; }
     public string[] Tags { get; set; }
     public string ImageUrl { get; set; }
+    public string Description { get; set; }
+    public DateTime CreatedAtUtc { get; set; }
 }
