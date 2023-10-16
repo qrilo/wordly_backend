@@ -31,7 +31,9 @@ public sealed class ObjectsMapper : IObjectsMapper
             Term = userTerm.Term,
             Definition = userTerm.Definition,
             Tags = userTerm.Tags,
-            ImageUrl = userTerm.ImageUrl
+            ImageUrl = userTerm.ImageUrl,
+            Description = userTerm.Description,
+            CreatedAtUtc = userTerm.CreatedAtUtc
         };
     }
 
@@ -45,7 +47,9 @@ public sealed class ObjectsMapper : IObjectsMapper
             Term = userTerm.Term,
             Definition = userTerm.Definition,
             Tags = userTerm.Tags,
-            ImageUrl = userTerm.ImageUrl
+            ImageUrl = userTerm.ImageUrl,
+            Description = userTerm.Description,
+            CreatedAtUtc = userTerm.CreatedAtUtc
         };
     }
 
@@ -59,7 +63,9 @@ public sealed class ObjectsMapper : IObjectsMapper
             Term = userTerm.Term,
             Definition = userTerm.Definition,
             Tags = userTerm.Tags,
-            ImageUrl = userTerm.ImageUrl
+            ImageUrl = userTerm.ImageUrl,
+            Description = userTerm.Description,
+            CreatedAtUtc = userTerm.CreatedAtUtc
         };
     }
 

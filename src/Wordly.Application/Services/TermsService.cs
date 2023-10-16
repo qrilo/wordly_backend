@@ -48,7 +48,7 @@ public class TermsService : ITermsService
     {
         var userId = Guid.Parse(_tokenReader.UserId);
 
-        var term = new UserTerm(request.Term, request.Definition, userId, request.Tags);
+        var term = new UserTerm(request.Term, request.Definition, userId, request.Tags, request.Description);
         
         if (request.Image is not null && request.Image.Length > 0)
         {
@@ -117,6 +117,7 @@ public class TermsService : ITermsService
         userTerm.SetTerm(request.Term);
         userTerm.SetDefinition(request.Definition);
         userTerm.SetTags(request.Tags);
+        userTerm.SetDescription(request.Description);
 
         await _unitOfWork.CommitAsync();
 

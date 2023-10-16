@@ -8,4 +8,5 @@ public sealed record CreateTermRequest
     public string Definition { get; init; }
     public string[] Tags { get; init; }
     public IFormFile Image { get; init; }
+    public string Description { get; init; }
 }
