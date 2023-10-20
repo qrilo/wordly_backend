@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wordly.Application.Models.Collection;
 using Wordly.Application.Models.Profile;
 using Wordly.Application.Models.Terms;
 using Wordly.Core.Models.Entities;
@@ -66,6 +67,59 @@ public sealed class ObjectsMapper : IObjectsMapper
             ImageUrl = userTerm.ImageUrl,
             Description = userTerm.Description,
             CreatedAtUtc = userTerm.CreatedAtUtc
+        };
+    }
+
+    public CollectionResponse ToCollectionResponse(Collection collections)
+    {
+        ArgumentNullException.ThrowIfNull(collections, nameof(collections));
+
+        return new CollectionResponse()
+        {
+            Id = collections.Id,
+            Name = collections.Name,
+            ImageUrl = collections.CollectionTerms?.Count > 0 ? collections.CollectionTerms.First().Term.ImageUrl : null,
+            Description = collections.Description,
+            CreatedAtUtc = collections.CreatedAtUtc,
+            UpdatedAtUtc = collections.UpdatedAtUtc
+        };
+    }
+
+    public CollectionSummaryResponse ToCollectionSummaryResponse(Collection collection, IReadOnlyCollection<UserTerm> terms)
+    {
+        ArgumentNullException.ThrowIfNull(collection, nameof(collection));
+
+        return new CollectionSummaryResponse()
+        {
+            Id = collection.Id,
+            Name = collection.Name,
+            Description = collection.Description,
+            ImageUrl = terms.FirstOrDefault()?.ImageUrl,
+            Terms = MapCollection(terms, ToCollectionTermResponse)
+        };
+    }
+
+    public CollectionInfoResponse ToCollectionInfoResponse(Collection collection)
+    {
+        ArgumentNullException.ThrowIfNull(collection, nameof(collection));
+
+        return new CollectionInfoResponse()
+        {
+            Id = collection.Id,
+            Name = collection.Name
+        };
+    }
+
+    private CollectionTermResponse ToCollectionTermResponse(UserTerm term)
+    {
+        ArgumentNullException.ThrowIfNull(term, nameof(term));
+
+        return new CollectionTermResponse()
+        {
+            Id = term.Id,
+            Term = term.Term,
+            Definition = term.Definition,
+            ImageUrl = term.ImageUrl
         };
     }
 

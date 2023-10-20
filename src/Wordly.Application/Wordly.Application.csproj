@@ -23,6 +23,8 @@
     <ItemGroup>
         <ProjectReference Include="..\Wordly.Core\Wordly.Core.csproj"/>
         <ProjectReference Include="..\Wordly.DataAccess\Wordly.DataAccess.csproj"/>
+
+
     </ItemGroup>
 
 

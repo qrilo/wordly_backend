@@ -13,6 +13,8 @@ public class DatabaseContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<UserTerm> UserTerms { get; set; }
+    public DbSet<Collection> Collections { get; set; }
+    public DbSet<CollectionTerm> CollectionTerms { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

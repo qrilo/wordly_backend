@@ -13,4 +13,5 @@ public interface IUserTermRepository : IRepositoryBase<UserTerm>
     Task<UserTerm> GetForUser(Guid userId, Guid userTermId);
     Task<IReadOnlyCollection<UserTerm>> GetForUser(Guid userId, Guid[] ids);
     Task<Page<UserTerm>> GetForUser(IPageFilter<UserTerm> pageFilter, Guid userId);
+    Task<IReadOnlyCollection<UserTerm>> GetNotAddedToCollection(Guid userId, Guid[] ids, Guid[] existingIds);
 }

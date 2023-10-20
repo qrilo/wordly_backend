@@ -9,9 +9,11 @@ using Wordly.Application.Jobs;
 using Wordly.Application.Mapping;
 using Wordly.Application.Services;
 using Wordly.Application.Validators.Auth;
+using Wordly.Application.Validators.Collections;
 using Wordly.Application.Validators.Terms;
 using Wordly.Core.Common;
 using Wordly.Core.Contracts;
+using Wordly.Core.Models.Entities;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Wordly.Application;
@@ -29,9 +31,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<ITermsService, TermsService>();
         services.AddScoped<IBlobService, BlobService>();
+        services.AddScoped<ICollectionService, CollectionService>();
 
         services.AddScoped<IAuthValidatorsAggregate, AuthValidatorsAggregate>();
         services.AddScoped<ITermValidatorsAggregate, TermValidatorsAggregate>();
+        services.AddScoped<ICollectionValidatorsAggregate, CollectionValidatorsAggregate>();
 
         return services;
     }

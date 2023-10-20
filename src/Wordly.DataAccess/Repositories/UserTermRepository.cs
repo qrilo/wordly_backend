@@ -34,6 +34,13 @@ public class UserTermRepository : RepositoryBase<UserTerm>, IUserTermRepository
         return await Context.UserTerms.Where(userTerm => ids.Contains(userTerm.Id) && userTerm.UserId == userId)
             .ToArrayAsync();
     }
+    
+    public async Task<IReadOnlyCollection<UserTerm>> GetNotAddedToCollection(Guid userId, Guid[] ids, Guid[] existingIds)
+    {
+        return await Context.UserTerms
+            .Where(userTerm => ids.Contains(userTerm.Id) && userTerm.UserId == userId && !existingIds.Contains(userTerm.Id))
+            .ToArrayAsync();
+    }
 
     public async Task<Page<UserTerm>> GetForUser(IPageFilter<UserTerm> pageFilter, Guid userId)
     {

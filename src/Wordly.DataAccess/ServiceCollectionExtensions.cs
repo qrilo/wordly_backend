@@ -34,6 +34,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokensRepository>();
         services.AddScoped<IUserTermRepository, UserTermRepository>();
+        services.AddScoped<ICollectionRepository, CollectionRepository>();
+        services.AddScoped<ICollectionTermRepository, CollectionTermRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

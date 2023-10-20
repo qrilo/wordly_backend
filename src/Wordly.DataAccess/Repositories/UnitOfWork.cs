@@ -16,6 +16,8 @@ public sealed class UnitOfWork : IUnitOfWork, IDisposable
     private IUserRepository _userRepository;
     private IRefreshTokenRepository _refreshTokenRepository;
     private IUserTermRepository _userTermRepository;
+    private ICollectionRepository _collectionRepository;
+    private ICollectionTermRepository _collectionTermRepository;
 
     public UnitOfWork(IServiceProvider serviceProvider)
     {
@@ -27,7 +29,10 @@ public sealed class UnitOfWork : IUnitOfWork, IDisposable
     public IUserRepository Users => _userRepository ??= GetService<IUserRepository>();
     public IRefreshTokenRepository RefreshTokens => _refreshTokenRepository ??= GetService<IRefreshTokenRepository>();
     public IUserTermRepository UserTerms => _userTermRepository ??= GetService<IUserTermRepository>();
-    
+    public ICollectionRepository Collections => _collectionRepository ??= GetService<ICollectionRepository>();
+    public ICollectionTermRepository CollectionTerms =>
+        _collectionTermRepository ??= GetService<ICollectionTermRepository>();
+
     public async Task CommitTransactionAsync(Action action)
     {
         await using var transaction = await _databaseContext.Database.BeginTransactionAsync();
