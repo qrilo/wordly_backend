@@ -24,6 +24,10 @@ public sealed class UserTermsConfiguration : EntityConfigurationBase<UserTerm, G
         builder.HasOne(entity => entity.User)
             .WithMany()
             .HasForeignKey(entity => entity.UserId);
+
+        builder.HasMany(entity => entity.CollectionTerms)
+            .WithOne(entity => entity.Term)
+            .HasForeignKey(entity => entity.TermId);
     }
     private static string SerializeTags(string[] tags)
     {

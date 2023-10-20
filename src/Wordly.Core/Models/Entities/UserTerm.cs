@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Wordly.Core.Models.Entities;
 
@@ -30,6 +31,7 @@ public sealed class UserTerm : EntityBase<Guid>
     public DateTime CreatedAtUtc { get; init; }
     public DateTime UpdatedAtUtc { get; private set; }
     public string Description { get; private set; }
+    public List<CollectionTerm> CollectionTerms { get; private set; }
 
     public void SetTerm(string term)
     {
