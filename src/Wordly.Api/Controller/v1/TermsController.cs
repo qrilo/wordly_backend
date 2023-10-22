@@ -16,7 +16,7 @@ public class TermsController : ApiControllerBase
     private readonly ITermsService _termsService;
     private readonly ITermValidatorsAggregate _termValidatorsAggregate;
     public TermsController(
-        ITermsService termsService, 
+        ITermsService termsService,
         ITermValidatorsAggregate termValidatorsAggregate)
     {
         _termsService = termsService;
@@ -30,7 +30,7 @@ public class TermsController : ApiControllerBase
     {
         await _termValidatorsAggregate.CreateTermValidator.ValidateAndThrowAsync(request);
         var result = await _termsService.CreateTerm(request);
-        
+
         return StatusCode(StatusCodes.Status201Created, result);
     }
 
@@ -41,7 +41,7 @@ public class TermsController : ApiControllerBase
     {
         await _termValidatorsAggregate.DeleteTermsValidator.ValidateAndThrowAsync(request);
         await _termsService.DeleteTerms(request);
-        
+
         return NoContent();
     }
 
@@ -53,7 +53,7 @@ public class TermsController : ApiControllerBase
     {
         await _termValidatorsAggregate.UpdateTermValidator.ValidateAndThrowAsync(request);
         var result = await _termsService.UpdateTerm(id, request);
-        
+
         return Ok(result);
     }
 
@@ -61,11 +61,13 @@ public class TermsController : ApiControllerBase
     [ProducesResponseType(typeof(PagingResponse<TermResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetTerms([FromQuery] PagingRequest request)
     {
-       var result = await _termsService.GetTerms(request);
+        var result = await _termsService.GetTerms(request);
         return Ok(result);
     }
 
     [HttpDelete("{termId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTermImage([FromRoute] Guid termId)
     {
         await _termsService.DeleteTermImage(termId);
