@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Wordly.Application;
 using Wordly.Application.Contracts;
 using Wordly.Application.Models.Common;
 using Wordly.Application.Models.Terms;
@@ -59,7 +60,7 @@ public class TermsController : ApiControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(PagingResponse<TermResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetTerms([FromQuery] PagingRequest request)
+    public async Task<IActionResult> GetTerms([FromQuery] TermPagingRequest request)
     {
         var result = await _termsService.GetTerms(request);
         return Ok(result);
