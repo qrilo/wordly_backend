@@ -12,6 +12,6 @@ public interface ITermsService
     Task<TermCreatedResponse> CreateTerm(CreateTermRequest request);
     Task DeleteTerms(DeleteTermsRequest request);
     Task<TermUpdatedResponse> UpdateTerm(Guid userTermId, UpdateTermRequest request);
-    Task<PagingResponse<TermResponse>> GetTerms(PagingRequest request);
+    Task<PagingResponse<TermResponse>> GetTerms(TermPagingRequest request);
     Task DeleteTermImage(Guid termId);
 }

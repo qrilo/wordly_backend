@@ -1,6 +1,6 @@
 ﻿namespace Wordly.Application.Models.Common;
 
-public sealed class PagingRequest
+public class PagingRequest
 {
     public const int MaxPageSize = 50;
 

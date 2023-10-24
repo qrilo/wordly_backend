@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Azure.Storage.Sas;
 using Kirpichyov.FriendlyJwt.Contracts;
 using Wordly.Application.Contracts;
+using Wordly.Application.Extensions;
 using Wordly.Application.Mapping;
 using Wordly.Application.Models.Arguments;
 using Wordly.Application.Models.Common;
@@ -24,8 +26,8 @@ public class TermsService : ITermsService
     private readonly IJwtTokenReader _tokenReader;
     private readonly IBlobService _blobService;
     public TermsService(
-        IUnitOfWork unitOfWork, 
-        IJwtTokenReader tokenReader, 
+        IUnitOfWork unitOfWork,
+        IJwtTokenReader tokenReader,
         IObjectsMapper mapper,
         IBlobService blobService)
     {
@@ -38,7 +40,7 @@ public class TermsService : ITermsService
     public async Task<IReadOnlyCollection<TermResponse>> GetTerms()
     {
         var userId = Guid.Parse(_tokenReader.UserId);
-        
+
         var userTerms = await _unitOfWork.UserTerms.GetForUser(userId);
 
         return _mapper.MapCollection(userTerms, _mapper.ToTermResponse);
@@ -49,29 +51,29 @@ public class TermsService : ITermsService
         var userId = Guid.Parse(_tokenReader.UserId);
 
         var term = new UserTerm(request.Term, request.Definition, userId, request.Tags, request.Description);
-        
+
         if (request.Image is not null && request.Image.Length > 0)
         {
             var uploadBlobArgs = new UploadBlobArgs(request.Image, BlobContainer.TermImages, isInline: true);
             var blobName = await _blobService.UploadBlob(uploadBlobArgs);
-            var blobId = Guid.Parse(blobName);   
-            
+            var blobId = Guid.Parse(blobName);
+
             var generateUriArgs = new GenerateBlobUriArgs(BlobContainer.TermImages, blobName, BlobSasPermissions.Read);
             var blobUri = _blobService.GenerateBlobUri(generateUriArgs);
-            
+
             term.SetImageUrlAndBlobId(blobUri, blobId);
         }
-        
+
         _unitOfWork.UserTerms.Add(term);
-        await _unitOfWork.CommitAsync();    
-        
+        await _unitOfWork.CommitAsync();
+
         return _mapper.ToTermCreatedResponse(term);
     }
 
     public async Task DeleteTerms(DeleteTermsRequest request)
     {
         var userId = Guid.Parse(_tokenReader.UserId);
-        
+
         var userTerms = await _unitOfWork.UserTerms.GetForUser(userId, request.Ids);
 
         var tasks = userTerms
@@ -79,10 +81,10 @@ public class TermsService : ITermsService
             .Select(term =>
             _blobService.DeleteBlob(BlobContainer.TermImages, term.ImageBlobId.ToString())
         );
-        
+
         _unitOfWork.UserTerms.RemoveRange(userTerms);
         await _unitOfWork.CommitAsync();
-        
+
         await Task.WhenAll(tasks);
     }
 
@@ -96,7 +98,7 @@ public class TermsService : ITermsService
         {
             throw new ResourceNotFoundException(nameof(UserTerm));
         }
-        
+
         if (request.Image is not null && request.Image.Length > 0)
         {
             if (userTerm.ImageBlobId is not null)
@@ -106,11 +108,11 @@ public class TermsService : ITermsService
 
             var uploadBlobArgs = new UploadBlobArgs(request.Image, BlobContainer.TermImages, isInline: true);
             var blobName = await _blobService.UploadBlob(uploadBlobArgs);
-            var blobId = Guid.Parse(blobName);   
-            
+            var blobId = Guid.Parse(blobName);
+
             var generateUriArgs = new GenerateBlobUriArgs(BlobContainer.TermImages, blobName, BlobSasPermissions.Read);
             var blobUri = _blobService.GenerateBlobUri(generateUriArgs);
-            
+
             userTerm.SetImageUrlAndBlobId(blobUri, blobId);
         }
 
@@ -124,7 +126,7 @@ public class TermsService : ITermsService
         return _mapper.ToTermUpdateResponse(userTerm);
     }
 
-    public async Task<PagingResponse<TermResponse>> GetTerms(PagingRequest request)
+    public async Task<PagingResponse<TermResponse>> GetTerms(TermPagingRequest request)
     {
         var userId = Guid.Parse(_tokenReader.UserId);
 
@@ -132,14 +134,46 @@ public class TermsService : ITermsService
         {
             PageNumber = request.Page,
             PageSize = request.PageSize,
-            OrderingExpression = userTerm => userTerm.CreatedAtUtc,
-            OrderingDirection = OrderingDirection.Descending,
+            OrderingExpression = request.SortBy == SortBy.Term ? userTerm => userTerm.Term : userTerm => userTerm.CreatedAtUtc,
+            OrderingDirection = SortDirection.Asc == request.SortDirection ? OrderingDirection.Ascending : OrderingDirection.Descending,
+            FilteringExpression = BuildFilterExpression(request)
         };
 
         var page = await _unitOfWork.UserTerms.GetForUser(pageFilter, userId);
         var models = _mapper.MapCollection(page.Items, _mapper.ToTermResponse);
 
         return PagingResponse<TermResponse>.CreateFromPage(page, models);
+    }
+    
+    public Expression<Func<UserTerm, bool>> BuildFilterExpression(TermPagingRequest request)
+    {
+        var expression = PredicateBuilder.True<UserTerm>();
+
+        if (request.SearchPhrase is not null && request.SearchPhrase.Length > 0)
+        {
+            if (request.SearchIn is SearchIn.Term)
+            {
+                expression = expression.And(userTerm => userTerm.Term.ToLower().Contains(request.SearchPhrase.ToLower()));
+            }
+            else if (request.SearchIn is SearchIn.Definition)
+            {
+                expression = expression.And(userTerm => userTerm.Definition.ToLower().Contains(request.SearchPhrase.ToLower()));
+            }
+            else if (request.SearchIn is SearchIn.All)
+            {
+                expression = expression.And(userTerm => userTerm.Term.ToLower().Contains(request.SearchPhrase.ToLower()) 
+                                                        || userTerm.Definition.ToLower().Contains(request.SearchPhrase.ToLower()));
+            }
+        }
+
+        /*if (request.Tags is not null && request.Tags.Length > 0)
+        {
+            var tagsNormalized = request.Tags.Select(tag => tag.ToLowerInvariant()).ToArray();
+
+            expression = expression.And(x => tagsNormalized.Contains(x.TagsRaw));
+        }*/
+
+        return expression;
     }
 
     public async Task DeleteTermImage(Guid termId)
