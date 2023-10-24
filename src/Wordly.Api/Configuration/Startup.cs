@@ -48,7 +48,6 @@ public class Startup
         services.AddDataAccessServices(_configuration, _environment);
         services.AddApplicationServices(_configuration);
         services.AddBroker();
-        services.AddJobs(_configuration);
 
         services.AddRouting(options => options.LowercaseUrls = true);
 
