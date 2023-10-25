@@ -17,10 +17,6 @@ public sealed class UserTermsConfiguration : EntityConfigurationBase<UserTerm, G
         builder.Property(entity => entity.CreatedAtUtc).IsRequired();
         builder.Property(entity => entity.UpdatedAtUtc).IsRequired();
 
-        builder.Property(entity => entity.Tags)
-            .HasConversion(tags => SerializeTags(tags),
-                json => DeserializeTags(json));
-
         builder.HasOne(entity => entity.User)
             .WithMany()
             .HasForeignKey(entity => entity.UserId);

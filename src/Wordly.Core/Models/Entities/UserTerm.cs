@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace Wordly.Core.Models.Entities;
 
@@ -11,7 +12,7 @@ public sealed class UserTerm : EntityBase<Guid>
         Term = term;
         Definition = definition;
         UserId = userId;
-        Tags = tags ?? Array.Empty<string>();
+        Tags = tags == null ? JsonSerializer.Serialize(Array.Empty<string>()) : JsonSerializer.Serialize(tags);
         CreatedAtUtc = DateTime.UtcNow;
         UpdatedAtUtc = DateTime.UtcNow;
         Description = description;
@@ -27,7 +28,7 @@ public sealed class UserTerm : EntityBase<Guid>
     public string ImageUrl { get; private set; }
     public Guid UserId { get; init; }
     public User User { get; init; }
-    public string[] Tags { get; private set; }
+    public string Tags { get;  private set; }
     public DateTime CreatedAtUtc { get; init; }
     public DateTime UpdatedAtUtc { get; private set; }
     public string Description { get; private set; }
@@ -54,7 +55,8 @@ public sealed class UserTerm : EntityBase<Guid>
 
     public void SetTags(string[] tags)
     {
-        Tags = tags ?? Array.Empty<string>();
+        Tags = tags == null ? Tags = JsonSerializer.Serialize(Array.Empty<string>()) : JsonSerializer.Serialize(tags);
+
         UpdatedAtUtc = DateTime.UtcNow;
     }
 
@@ -68,5 +70,10 @@ public sealed class UserTerm : EntityBase<Guid>
     {
         Description = description;
         UpdatedAtUtc = DateTime.UtcNow;
+    }
+
+    public string[] GetTags()
+    {
+        return Tags == null ? Array.Empty<string>() : JsonSerializer.Deserialize<string[]>(Tags);
     }
 }
