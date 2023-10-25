@@ -51,7 +51,7 @@ public class TermsService : ITermsService
         var userId = Guid.Parse(_tokenReader.UserId);
 
         var term = new UserTerm(request.Term, request.Definition, userId, request.Tags, request.Description);
-
+        
         if (request.Image is not null && request.Image.Length > 0)
         {
             var uploadBlobArgs = new UploadBlobArgs(request.Image, BlobContainer.TermImages, isInline: true);

@@ -31,7 +31,7 @@ public sealed class ObjectsMapper : IObjectsMapper
             Id = userTerm.Id,
             Term = userTerm.Term,
             Definition = userTerm.Definition,
-            Tags = userTerm.Tags,
+            Tags = userTerm.GetTags(),
             ImageUrl = userTerm.ImageUrl,
             Description = userTerm.Description,
             CreatedAtUtc = userTerm.CreatedAtUtc
@@ -47,7 +47,7 @@ public sealed class ObjectsMapper : IObjectsMapper
             Id = userTerm.Id,
             Term = userTerm.Term,
             Definition = userTerm.Definition,
-            Tags = userTerm.Tags,
+            Tags = userTerm.GetTags(),
             ImageUrl = userTerm.ImageUrl,
             Description = userTerm.Description,
             CreatedAtUtc = userTerm.CreatedAtUtc
@@ -63,7 +63,7 @@ public sealed class ObjectsMapper : IObjectsMapper
             Id = userTerm.Id,
             Term = userTerm.Term,
             Definition = userTerm.Definition,
-            Tags = userTerm.Tags,
+            Tags = userTerm.GetTags(),
             ImageUrl = userTerm.ImageUrl,
             Description = userTerm.Description,
             CreatedAtUtc = userTerm.CreatedAtUtc
