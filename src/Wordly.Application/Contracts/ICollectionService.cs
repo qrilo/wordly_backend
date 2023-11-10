@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wordly.Application.Models.Collection;
+using Wordly.Application.Models.Collection.Test;
 using Wordly.Application.Models.Common;
 
 namespace Wordly.Application.Contracts;
@@ -17,4 +18,6 @@ public interface ICollectionService
     Task AddTermsToCollection(Guid collectionId, AddTermsToCollectionRequest request);
     Task DeleteTermsFromCollection(Guid collectionId, DeleteTermFromCollectionRequest request);
     Task<IReadOnlyCollection<CollectionResponse>> SearchCollection(SearchCollectionRequest request);
+    Task<IReadOnlyCollection<TestResponse>> GetTest(Guid collectionId, TestRequest request);
+    Task<SubmitTestResponse> SubmitTest(Guid collectionId, SubmitTestRequest request);
 }

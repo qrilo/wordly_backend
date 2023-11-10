@@ -52,7 +52,7 @@ public class CollectionRepository : RepositoryBase<Collection>, ICollectionRepos
             .Where(collection => collection.AuthorId == userId 
                                  && EF.Functions.ILike(collection.Name, $"%{name}%")).ToArrayAsync();    
     }
-
+    
     public async Task<Page<Collection>> GetUserCollections(IPageFilter<Collection> pageFilter, Guid userId)
     {
         return await pageFilter.ApplyToQueryable(Context.Collections
