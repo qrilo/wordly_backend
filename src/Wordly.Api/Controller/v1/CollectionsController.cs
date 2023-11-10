@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Wordly.Application.Contracts;
 using Wordly.Application.Models.Collection;
+using Wordly.Application.Models.Collection.Test;
 using Wordly.Application.Models.Common;
 using Wordly.Core.Models.Api;
 
@@ -115,4 +116,21 @@ public class CollectionsController : ApiControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("{collectionId:guid}/test")]
+    [ProducesResponseType(typeof(TestResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetTest([FromRoute] Guid collectionId, [FromQuery] TestRequest request)
+    {
+        var result = await _collectionService.GetTest(collectionId, request);
+        
+        return Ok(result);
+    }
+
+    [HttpPost("{collectionId:guid}/test")]
+    public async Task<IActionResult> SubmitTest([FromRoute] Guid collectionId, [FromBody] SubmitTestRequest request)
+    {
+        var result = await _collectionService.SubmitTest(collectionId, request);
+        return Ok(result);
+    }
+    
 }
