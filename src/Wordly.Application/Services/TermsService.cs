@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Azure.Storage.Sas;
 using Kirpichyov.FriendlyJwt.Contracts;
+using Microsoft.EntityFrameworkCore;
 using Wordly.Application.Contracts;
 using Wordly.Application.Extensions;
 using Wordly.Application.Mapping;
@@ -166,12 +167,18 @@ public class TermsService : ITermsService
             }
         }
 
-        /*if (request.Tags is not null && request.Tags.Length > 0)
+        if (request.Tags is not null && request.Tags.Length > 0)
         {
             var tagsNormalized = request.Tags.Select(tag => tag.ToLowerInvariant()).ToArray();
+            var tagsSearchFilter = PredicateBuilder.False<UserTerm>();
 
-            expression = expression.And(x => tagsNormalized.Contains(x.TagsRaw));
-        }*/
+            foreach (var tag in tagsNormalized)
+            {
+                tagsSearchFilter = tagsSearchFilter.Or(x => EF.Functions.ILike(x.Tags, $"%\"{tag}\"%"));
+            }
+
+            return expression.And(tagsSearchFilter);
+        }
 
         return expression;
     }
